@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:object_project/AgendaDocuments.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:object_project/LodingPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<String,dynamic> jsonData = {};
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -44,6 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final String response = await rootBundle.loadString('assets/data.json');
     setState(()  {
       jsonData = json.decode(response);
+      if(jsonData != {}) {
+        isLoading = false;
+      }
     });
   }
 
@@ -51,14 +56,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: jsonData != {} ? Container(
+        child: isLoading ?
+        LoadingPage(loadingMessage: "로딩중...")
+        : Container(
           color: Colors.white,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: AgendaDocuments(
             inventoryData: jsonData,
           ),
-        ) : Text("loading"),
+        ),
       ),
     );
   }

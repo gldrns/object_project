@@ -21,7 +21,7 @@ class AgendaDocumentsState extends State<AgendaDocuments> {
   @override
   void initState() {
     super.initState();
-    documentFolderData = inventoryData['documentFolders'];
+    documentFolderData = inventoryData['pictureFolders'];
   }
 
   @override
@@ -29,8 +29,8 @@ class AgendaDocumentsState extends State<AgendaDocuments> {
     return Scaffold(
       body: Center(
         child: DocumentItemScreen(
-          folderPath: '資料',
-          documentFolderData: inventoryData['documentFolders'] ?? [],
+          folderPath: '사진',
+          documentFolderData: documentFolderData ?? {},
         )
       ),
     );

@@ -1,19 +1,15 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:object_project/FolderMake.dart';
-import 'package:object_project/FolderSelect.dart';
 import 'package:http/http.dart' as http;
-import 'package:object_project/SnackbarPage.dart';
 import 'package:object_project/ToastPage.dart';
 import 'package:open_file/open_file.dart';
+import '../CameraPage.dart';
 
 class DocumentItemScreen extends StatefulWidget {
   final Map<String, dynamic> documentFolderData;
@@ -53,18 +49,16 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
   String fileName = '';
   String folderName = '';
   bool backAction = false;
-  late String apiUrl;
   late TextEditingController textEditingController;
   int selectedIndex_file = -1;
   int selectedIndex_folder = -1;
-  List<String>selectedIndex_fileList = [];
+  List<int>selectedIndex_fileList = [];
   List<String>selectedFileIdList = [];
   List<Map<String,dynamic>>fileMapsList = [];
 
   int folderIndex = 0;
   List<dynamic> folderObjects = [];
   bool isEditFile = false;
-  String isEditFileText = "";
   late Function(bool,int) setIsEditFile;
 
   Color editColor = Colors.blueGrey.withOpacity(0.5);
@@ -77,7 +71,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
 
   List<dynamic> notificationItemId = [];
   String notificationFolderId  = "";
-  String _userId = "";
   List<String>_selectedUserIdList = [];
 
   List<XFile> _selectedImages = [];
@@ -99,10 +92,9 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
       textEditingController = TextEditingController();
     });
 
-    // getIdToken();
 
     documentItems_record.add(documentItems);
-    folderNames.add('자료');
+    folderNames.add('사진');
     documentObjects_record.add(documentObjects);
 
     if (notificationFolderId != '') {
@@ -290,99 +282,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
     }
   }
 
-  void selectFolder(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-        FolderSelect(
-          projectId: projectId,
-          apiUrl: apiUrl,
-          picturesItems: documentItems_whole,
-          onFolderSelected: (
-              selectObjectsList,
-              selectFolderTitle,
-              selectFolderId,
-              selectFolderPath) {
-            setState(() {
-              showDialog (
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(
-                      '${selectedFileIdList.length}장의 파일을'
-                          '"$selectFolderTitle"폴더로 이동합니다。\n괜찮으시겠습니까',
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey)
-                  ),
-                  content: selectedFileIdList.length > 5 ?
-                  const Text(
-                      '상황에 따라 시간이 걸릴 수 있습니다\n이동 중에는 촬영 등의 작업은 할 수 없습니다',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueGrey
-                      )
-                  ) : null,
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('취소',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueGrey
-                          )),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        List<dynamic> items = widget.documentFolderData["items"];
-                        for (int inner = 0; inner < items.length; inner++) {
-                          if (items[inner]["folder_path"] == selectFolderPath) {
-                            setState(() {
-                              folderIndex = inner;
-                            });
-                          }
-                        }
-
-                        folderObjects = items[folderIndex]["objects"];
-                        isEditFile = true;
-                        isEditFileText = "파일 이동중...";
-
-
-                        prefs.setStringList("editDocuments", selectedFileIdList);
-                        editDocumentsList = selectedFileIdList;
-
-
-                        prefs.setBool("editingFiles", true);
-                      },
-                      child: const Text('이동',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueGrey
-                          )
-                      ),
-                    )
-                  ],
-                ),
-              );
-            });
-          },
-          fromChecklist: false,
-          fromEdit: true,
-          folderId: folderId,
-        )
-      ),
-    );
-  }
-
   Future<void> showFileOptionsBottomSheet(
       int index,
       List<dynamic> itemList,
@@ -392,9 +291,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
       ) async {
     String fileUrl = fileMap['full_path'] ?? "";
     String selectName = fileMap['name'].toString();
-
-    final prefs = await SharedPreferences.getInstance();
-    bool checkEditing = prefs.getBool('editingFiles') ?? false;
 
     showModalBottomSheet(
       context: context,
@@ -495,11 +391,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                                       setState(() {
                                         documentObjects.removeAt(index);
                                       });
-
-                                      if (checkEditing) {
-                                        ToastPage.showToast('파일을 삭제, 이동 중입니다. 기다려 주십시오');
-                                      } else {
-                                      }
                                     },
                                     child: const Text('삭제',
                                         style: TextStyle(
@@ -559,154 +450,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
     updateItem(documentItems_whole);
   }
 
-  static Future<void>moveFiles (
-      int folderIndex,
-      String newFolderName,
-      String newFolderPath,
-      String apiUrl,
-      String projectId,
-      List<String>selectedFileIdList,
-      List<String> folderPathList,
-      Function(bool,int) setIsEditFile,
-      Function(bool) resetEditList,
-      Function(String,bool,int,int) editingFiles,
-      Function(String, Map<String,dynamic>) editFolder,
-      ) async {
-    final completer = Completer<void>();
-    final receivePort = ReceivePort();
-
-    final String folderPathListLast = folderPathList.last;
-
-    final String imageUrl =
-        '$apiUrl/api/mobile/projects/$projectId/documentFolder/documents';
-
-    moveFilesPoint ({
-      'sendPort': receivePort.sendPort,
-      'newFolderPath' : newFolderPath,
-      'imageUrl': imageUrl,
-      'selectedFileIdList' : selectedFileIdList,
-      'folderPathList' : folderPathListLast,
-      'editFolder' : editFolder,
-    });
-
-    final prefs = await SharedPreferences.getInstance();
-
-    receivePort.listen((dynamic data) async {
-      int? nullableIndex_total = int.tryParse(data.split(':')[1].toString());
-      int? nullableIndex = int.tryParse(data.split(':')[2]);
-
-      if (data.startsWith('start')) {
-        if (nullableIndex != null && nullableIndex_total != null) {
-          int index = nullableIndex;
-          int index_total = nullableIndex_total;
-
-          prefs.setBool("editingFiles", true);
-          editingFiles("ファイル移動中...",true,index_total,index);
-        }
-      }
-
-      if (data.startsWith('success')) {
-        if (nullableIndex != null && nullableIndex_total != null) {
-          int index = nullableIndex;
-          int index_total = nullableIndex_total;
-
-          if (index + 1 == index_total) {
-            SnackBarPage.showSnackBar(true, 'ファイル移動', '$newFolderNameに$index_total数のファイルを移動しました');
-            resetEditList(false);
-            setIsEditFile(true,index);
-
-            prefs.remove("editDocuments");
-            editingFiles("ファイル移動中...",false,index_total,index);
-
-            completer.complete();
-            receivePort.close();
-          } else {
-            int index = nullableIndex;
-            int index_total = nullableIndex_total;
-
-            editingFiles("ファイル移動中...",false,index_total,index);
-            setIsEditFile(false,index);
-          }
-        }
-      }
-
-      if (data.startsWith('error')) {
-        if (nullableIndex != null && nullableIndex_total != null) {
-          int index = nullableIndex;
-          int index_total = nullableIndex_total;
-
-          if (index + 1 == index_total) {
-            SnackBarPage.showSnackBar(false, 'ファイル移動中エラー', '$newFolderNameに移動中にエラーが発生しました');
-
-            resetEditList(false);
-            setIsEditFile(true,index);
-
-            editingFiles("ファイル移動中...",false,index_total,index);
-            prefs.remove("editDocuments");
-
-            completer.complete();
-            receivePort.close();
-          } else {
-            int index = nullableIndex;
-            int index_total = nullableIndex_total;
-
-            editingFiles("ファイル移動中...",false,index_total,index);
-            setIsEditFile(false,index);
-          }
-        }
-      }
-    });
-
-    return completer.future;
-  }
-
-  static Future<void> moveFilesPoint(Map<String, dynamic> message) async {
-    final SendPort sendPort = message['sendPort'];
-    final String newFolderPath = message['newFolderPath'];
-    final String imageUrl = message['imageUrl'];
-    final List<String> selectedFileIdList = List<String>.from(message['selectedFileIdList']);
-    final String folderPathList = message['folderPathList'];
-    final List<String> selectedFileIdList_back = List<String>.from(selectedFileIdList);
-    Function(String, Map<String,dynamic>) editFolder = message['editFolder'];
-  }
-
-  static Future<void>deleteFiles (
-      String newFolderName,
-      String apiUrl,
-      String projectId,
-      List<Map<String,dynamic>> fileMapsList,
-      List<String>selectedFileIdList,
-      Function(bool,int) setIsEditFile,
-      ) async {
-    final completer = Completer<void>();
-    final receivePort = ReceivePort();
-
-    final String imageUrl = '$apiUrl/api/mobile/projects/$projectId/documentFolder/documents';
-
-    deleteFilesPoint ({
-      'sendPort': receivePort.sendPort,
-      'imageUrl': imageUrl,
-      'selectedFileIdList' : selectedFileIdList,
-    });
-
-    final prefs = await SharedPreferences.getInstance();
-
-    return completer.future;
-  }
-
-  static Future<void> deleteFilesPoint(Map<String, dynamic> message
-      ) async {
-    final SendPort sendPort = message['sendPort'];
-    final String imageUrl = message['imageUrl'];
-    final List<String> selectedFileIdList = List<String>.from(message['selectedFileIdList']);
-
-    int deleteIndex = selectedFileIdList.length;
-    sendPort.send('start:$deleteIndex:0');
-
-  }
-
   Future<void> _pickImages() async {
-    final prefs = await SharedPreferences.getInstance();
 
     final picker = ImagePicker();
     try {
@@ -733,29 +477,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
     }
   }
 
-  Future<void> _pickDocument() async {
-    FilePickerResult? pickedFiles = await FilePicker.platform.pickFiles();
-
-    if (pickedFiles != null) {
-      setState(() {
-        documentObjects.add(
-            {
-              "id" : "",
-              "name" : pickedFiles.names.toString(),
-              "full_path" : pickedFiles.paths.toString(),
-            }
-        );
-      });
-    } else {
-      Navigator.pop(context);
-    }
-
-  }
-
   Future<void> _startSelectPage(BuildContext ctx,  List<dynamic> objectList) async {
-
-    final prefs = await SharedPreferences.getInstance();
-    bool checkUpload = prefs.getBool('uploadFiles') ?? false;
 
     showModalBottomSheet(
       context: ctx,
@@ -763,7 +485,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
       builder: (_) {
         return
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.4,
             child: Theme(
               data: Theme.of(context).copyWith(
                 iconTheme: IconThemeData(
@@ -860,19 +582,25 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                               _selectedUserIdList.clear();
                             });
                             Navigator.pop(context);
-                            _pickDocument();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CameraPage()
+                              ),
+                            );
+
                           },
                           icon: Container(
                             color: Colors.transparent,
                             child:
                             Icon(
-                              Icons.file_present_outlined,
+                              Icons.camera_alt_outlined,
                               color: Colors.blueGrey,
                               size: MediaQuery.of(context).size.height * 0.04,
                             )
                           ),
                         ),
-                        const Text('파일 추가',
+                        const Text('사진 촬영',
                           style: TextStyle(
                             color: Colors.blueGrey,
                             fontWeight: FontWeight.bold,
@@ -885,29 +613,21 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            if(checkUpload) {
-                              ToastPage.showToast("파일 업로드 중입니다");
-                            } else {
-                              if (objectList.isEmpty) {
-                                ToastPage.showToast("선택할 수 있는 파일이 없습니다");
-                              } else {
-                                setState(() {
-                                  for (int i = 0; i < documentObjects_last.length; i ++) {
-                                    if (!selectedIndex_fileList.contains(i.toString())) {
-                                      selectedIndex_fileList.add(i.toString());
-                                      selectedFileIdList.add(objectList[i]['id'].toString());
-                                      fileMapsList.add(objectList[i]);
-                                    }
+                            setState(() {
+                              for (int i = 0; i < documentObjects_last.length; i ++) {
+                                if (!selectedIndex_fileList.contains(i)) {
+                                  selectedIndex_fileList.add(i);
+                                  selectedFileIdList.add(objectList[i]['id'].toString());
+                                  fileMapsList.add(objectList[i]);
+                                }
 
-                                    if (i + 1 == documentObjects_last.length &&
-                                        selectedIndex_fileList.isEmpty) {
-                                      ToastPage.showToast("선택할 수 있는 파일이 없습니다");
-                                    }
-                                  }
-                                });
+                                if (i + 1 == documentObjects_last.length &&
+                                    selectedIndex_fileList.isEmpty) {
+                                  ToastPage.showToast("선택할 수 있는 파일이 없습니다");
+                                }
                               }
-                              Navigator.pop(context);
-                            }
+                            });
+                            Navigator.pop(context);
                           },
                           icon: Icon(
                             Icons.checklist_outlined,
@@ -950,137 +670,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                             style: TextStyle(
                               color: selectedIndex_fileList.isEmpty ?
                               Colors.grey : Colors.blueGrey,
-                              fontWeight: FontWeight.bold,
-                            )
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            if(checkUpload) {
-                              ToastPage.showToast("파일 업로드 중입니다");
-                            } else {
-                              if (selectedIndex_fileList.isEmpty) {
-                                ToastPage.showToast('선택된 파일이 없습니다');
-                              } else {
-                                Navigator.pop(context);
-                                selectFolder(context);
-                              }
-                            }
-                          },
-                          icon: Icon(
-                            Icons.drive_file_move_outlined,
-                            color: selectedIndex_fileList.isEmpty ?
-                            Colors.grey : Colors.blueGrey,
-                            size: MediaQuery.of(context).size.height * 0.04,
-                          ),
-                        ),
-                        Text('파일 이동',
-                            style: TextStyle(
-                              color: selectedIndex_fileList.isEmpty ?
-                              Colors.grey : Colors.blueGrey,
-                              fontWeight: FontWeight.bold,
-                            )
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            if(checkUpload) {
-                              ToastPage.showToast("파일 업로드 중입니다");
-                            } else {
-                              if (selectedIndex_fileList.isEmpty) {
-                                ToastPage.showToast('선택된 파일이 없습니다');
-                              } else {
-                                Navigator.pop(context);
-                                setState(() {
-                                  selectedIndex_file = -1;
-                                });
-                                showDialog (
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(
-                                        '${selectedFileIdList.length}장의 파일을 삭제합니다。\n괜찮으시겠습니까',
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey)
-                                    ),
-                                    content: selectedFileIdList.length > 5 ?
-                                    const Text(
-                                        '상황에 따라 시간이 걸릴 수 있습니다\n삭제중에는 촬영등의 작업은 할 수 없습니다',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey
-                                        )
-                                    ) : null,
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('취소',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueGrey
-                                            )),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.pop(context);
-                                          final prefs = await SharedPreferences.getInstance();
-
-                                          isEditFile = true;
-                                          isEditFileText = "사진 삭제 중...";
-
-                                          prefs.setStringList("editDocuments", selectedFileIdList);
-                                          editDocumentsList = selectedFileIdList;
-
-
-                                          prefs.setBool("editingFiles", true);
-                                          deleteFiles(
-                                            folderPathTitle,
-                                            apiUrl,
-                                            projectId,
-                                            fileMapsList,
-                                            selectedFileIdList,
-                                            setIsEditFile,
-
-                                          );
-                                        },
-                                        child: const Text('削除',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.red
-                                            )
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            }
-                          },
-                          icon: Icon(
-                            Icons.delete_outline,
-                            color: selectedIndex_fileList.isEmpty ?
-                            Colors.grey : Colors.red,
-                            size: MediaQuery.of(context).size.height * 0.04,
-                          ),
-                        ),
-                        Text('파일 삭제',
-                            style: TextStyle(
-                              color: selectedIndex_fileList.isEmpty ?
-                              Colors.grey : Colors.red,
                               fontWeight: FontWeight.bold,
                             )
                         ),
@@ -1315,6 +904,9 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                                                 child: TextButton(
                                                   onPressed: () async {
                                                     if (newName != '') {
+                                                      setState(() {
+                                                        documentItems[selectedIndex_folder]['name'] = newName;
+                                                      });
                                                       Navigator.pop(context);
                                                     } else {
                                                       ToastPage.showToast('폴더명을 입력하세요');
@@ -1388,12 +980,6 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                                 TextButton(
                                   onPressed: () async {
                                     Navigator.pop(context);
-                                    final prefs = await SharedPreferences.getInstance();
-                                    bool checkEditing = prefs.getBool('editingFiles') ?? false;
-                                    if (checkEditing) {
-                                      ToastPage.showToast('파일을 삭제, 이동 중입니다. 기다려 주십시오');
-                                    } else {
-                                    }
                                   },
                                   child: const Text('삭제',
                                       style: TextStyle(
@@ -1574,12 +1160,12 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
             setState(() {
               selectedIndex_file = -1;
               selectedIndex_folder = -1;
-              if (selectedIndex_fileList.contains(index.toString())) {
-                selectedIndex_fileList.remove(index.toString());
+              if (selectedIndex_fileList.contains(index)) {
+                selectedIndex_fileList.remove(index);
                 selectedFileIdList.remove(data['id'].toString());
                 fileMapsList.remove(data);
               } else {
-                selectedIndex_fileList.add(index.toString());
+                selectedIndex_fileList.add(index);
                 selectedFileIdList.add(data['id'].toString());
                 fileMapsList.add(data);
               }
@@ -1616,15 +1202,15 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                 );
               }
             } else {
-              if (selectedIndex_fileList.contains(index.toString())) {
+              if (selectedIndex_fileList.contains(index)) {
                 setState(() {
-                  selectedIndex_fileList.remove(index.toString());
+                  selectedIndex_fileList.remove(index);
                   selectedFileIdList.remove(data['id'].toString());
                   fileMapsList.remove(data);
                 });
               } else {
                 setState(() {
-                  selectedIndex_fileList.add(index.toString());
+                  selectedIndex_fileList.add(index);
                   selectedFileIdList.add(data['id'].toString());
                   fileMapsList.add(data);
                 });
@@ -1637,7 +1223,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: selectedIndex_file == index ||
-            selectedIndex_fileList.contains(index.toString()) ?
+            selectedIndex_fileList.contains(index) ?
             const Color(0xFFDCDFE6) : Colors.white,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
@@ -1682,7 +1268,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                       },
                     ),
                   if (selectedIndex_file == index ||
-                      selectedIndex_fileList.contains(index.toString()) ||
+                      selectedIndex_fileList.contains(index) ||
                       isEditFile
                   )
                     Positioned.fill(
@@ -1691,7 +1277,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                       ),
                     ),
                   if (selectedIndex_file == index ||
-                      selectedIndex_fileList.contains(index.toString()))
+                      selectedIndex_fileList.contains(index))
                     const Positioned(
                       top: 10,
                       right: 0,
@@ -1746,8 +1332,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
           ),
         ),
         backgroundColor: Colors.white,
-        leading: (folderNames.last == "자료" && insideCounter == 0) || isEditFile ?
-        const Text("") :
+        leading:
         IconButton(
             icon: const Icon(
               Icons.arrow_back_ios_new_outlined,
@@ -1957,64 +1542,56 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
 
                     return GestureDetector(
                       onLongPress: () {
-                        if (editDocumentsList.contains(documentObjects[adjustedIndex]['id'].toString())) {
-                          ToastPage.showToast('이동 또는 삭제 중인 파일입니다');
-                        } else {
-                          setState(() {
-                            selectedIndex_file = -1;
-                            selectedIndex_folder = -1;
+                        setState(() {
+                          selectedIndex_file = -1;
+                          selectedIndex_folder = -1;
 
-                            if (selectedIndex_fileList.contains(adjustedIndex.toString())) {
-                              selectedIndex_fileList.remove(adjustedIndex.toString());
-                              selectedFileIdList.remove(documentObjects[adjustedIndex]['id'].toString());
-                              fileMapsList.remove(documentObjects[adjustedIndex]);
-                            } else {
-                              selectedIndex_fileList.add(adjustedIndex.toString());
-                              selectedFileIdList.add(documentObjects[adjustedIndex]['id'].toString());
-                              fileMapsList.add(documentObjects[adjustedIndex]);
-                            }
-                          });
-                        }
+                          if (selectedIndex_fileList.contains(adjustedIndex)) {
+                            selectedIndex_fileList.remove(adjustedIndex);
+                            selectedFileIdList.remove(documentObjects[adjustedIndex]['id'].toString());
+                            fileMapsList.remove(documentObjects[adjustedIndex]);
+                          } else {
+                            selectedIndex_fileList.add(adjustedIndex);
+                            selectedFileIdList.add(documentObjects[adjustedIndex]['id'].toString());
+                            fileMapsList.add(documentObjects[adjustedIndex]);
+                          }
+                        });
                       },
                       onTap: () {
-                        if (editDocumentsList.contains(documentObjects[adjustedIndex]['id'].toString())) {
-                          ToastPage.showToast('이동 또는 삭제 중인 파일입니다');
-                        } else {
-                          if (selectedIndex_fileList.isEmpty) {
-                            setState(() {
-                              selectedIndex_folder = -1;
-                            });
-                            if (iconData == Icons.image_outlined) {
-                              showFileOptionsBottomSheet(
+                        if (selectedIndex_fileList.isEmpty) {
+                          setState(() {
+                            selectedIndex_folder = -1;
+                          });
+                          if (iconData == Icons.image_outlined) {
+                            showFileOptionsBottomSheet(
                                 index,
                                 documentItems_last,
                                 documentObjects_last,
                                 true,
                                 documentObjects[adjustedIndex]
-                              );
-                            } else {
-                              showFileOptionsBottomSheet(
+                            );
+                          } else {
+                            showFileOptionsBottomSheet(
                                 index,
                                 documentItems_last,
                                 documentObjects_last,
                                 false,
                                 documentObjects[adjustedIndex]
-                              );
-                            }
+                            );
+                          }
+                        } else {
+                          if (selectedIndex_fileList.contains(adjustedIndex)) {
+                            setState(() {
+                              selectedIndex_fileList.remove(adjustedIndex);
+                              selectedFileIdList.remove(documentObjects[adjustedIndex]['id'].toString());
+                              fileMapsList.remove(documentObjects[adjustedIndex]);
+                            });
                           } else {
-                            if (selectedIndex_fileList.contains(adjustedIndex.toString())) {
-                              setState(() {
-                                selectedIndex_fileList.remove(adjustedIndex.toString());
-                                selectedFileIdList.remove(documentObjects[adjustedIndex]['id'].toString());
-                                fileMapsList.remove(documentObjects[adjustedIndex]);
-                              });
-                            } else {
-                              setState(() {
-                                selectedIndex_fileList.add(adjustedIndex.toString());
-                                selectedFileIdList.add(documentObjects[adjustedIndex]['id'].toString());
-                                fileMapsList.add(documentObjects[adjustedIndex]);
-                              });
-                            }
+                            setState(() {
+                              selectedIndex_fileList.add(adjustedIndex);
+                              selectedFileIdList.add(documentObjects[adjustedIndex]['id'].toString());
+                              fileMapsList.add(documentObjects[adjustedIndex]);
+                            });
                           }
                         }
                       },
@@ -2024,7 +1601,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 2),
                           decoration: BoxDecoration(
                             color: selectedIndex_file == adjustedIndex ||
-                                selectedIndex_fileList.contains(adjustedIndex.toString()) ?
+                                selectedIndex_fileList.contains(adjustedIndex) ?
                             const Color(0xFFDCDFE6) : Colors.white,
                             border: Border.all(
                               color: const Color(0xFFBEBEBE),
@@ -2049,7 +1626,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                                       children :
                                         [
                                           if ( selectedIndex_file == adjustedIndex ||
-                                            selectedIndex_fileList.contains(adjustedIndex.toString()))
+                                            selectedIndex_fileList.contains(adjustedIndex))
                                             const Icon(
                                               Icons.check_circle_rounded,
                                               color: Colors.blueGrey,
@@ -2083,7 +1660,7 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
                                       },
                                     ),
                                     if(selectedIndex_file == adjustedIndex ||
-                                        selectedIndex_fileList.contains(adjustedIndex.toString()))
+                                        selectedIndex_fileList.contains(adjustedIndex))
                                       Positioned(
                                         top: MediaQuery.of(context).size.height * 0.025,
                                         left: MediaQuery.of(context).size.width * 0.1,
@@ -2145,17 +1722,11 @@ class DocumentItemScreenState extends State<DocumentItemScreen> {
               ),
               backgroundColor: Colors.blueGrey,
               onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                bool checkEditing = prefs.getBool('editingFiles') ?? false;
-                if (checkEditing) {
-                  ToastPage.showToast('파일을 삭제, 이동 중입니다. 기다려 주십시오');
-                } else {
-                  setState(() {
-                    selectedIndex_file = -1;
-                    selectedIndex_folder = -1;
-                  });
-                  _startSelectPage(context, documentObjects_last);
-                }
+                setState(() {
+                  selectedIndex_file = -1;
+                  selectedIndex_folder = -1;
+                });
+                _startSelectPage(context, documentObjects_last);
               },
               label: Row(
                 children: [

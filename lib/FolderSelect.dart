@@ -10,8 +10,6 @@ class FolderSelect extends StatefulWidget {
   final bool fromChecklist;
   final bool fromEdit;
   final String folderId;
-  final String projectId;
-  final String apiUrl;
 
   FolderSelect({
     required this.picturesItems,
@@ -19,8 +17,6 @@ class FolderSelect extends StatefulWidget {
     required this.fromChecklist,
     required this.fromEdit,
     required this.folderId,
-    required this.projectId,
-    required this.apiUrl
   });
 
   @override
@@ -207,11 +203,10 @@ class _FolderSelectState extends State<FolderSelect> {
                   Wrap(
                     alignment: WrapAlignment.start,
                     children: [
-                      Image.asset(
-                        'assets/images/folderIcon.png',
+                      Icon(Icons.folder_open_outlined,
                         color: itemId == widget.folderId ?
                         Colors.grey : const Color(0xFF005F6B),
-                        height: 40,
+                        size: 40
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),

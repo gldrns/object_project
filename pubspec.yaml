@@ -39,17 +39,16 @@ dependencies:
   package_info_plus: ^8.1.2
   get: ^4.6.6
   fluttertoast: ^8.2.2
-  flutter_svg: ^2.0.7
   intl: ^0.19.0
   logger: ^2.4.0
   scroll_to_index: ^3.0.1
   camera: ^0.11.0+2
-  flutter_animate: ^4.4.1
   path_provider: ^2.0.8
   dynamic_height_grid_view: ^0.0.4
   url_launcher: ^6.1.11
   file_picker: ^5.2.7
   open_file: ^3.5.10
+  camerawesome: ^2.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -73,144 +72,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/data.json
-    - assets/blackboard/blackboard1.svg
-    - assets/blackboard/blackboard2.svg
-    - assets/blackboard/blackboard3.svg
-    - assets/blackboard/blackboard4.svg
-    - assets/blackboard/blackboard5.svg
-    - assets/blackboard/blackboard6.svg
-    - assets/blackboard/blackboard7.svg
-    - assets/blackboard/blackboard8.svg
-    - assets/blackboard/blackboard9.svg
-    - assets/blackboard/blackboard10.svg
-    - assets/blackboard/blackboard11.svg
-    - assets/blackboard/blackboard12.svg
-    - assets/blackboard/blackboard13.svg
-    - assets/blackboard/blackboard14.svg
-    - assets/images/logo.png
-    - assets/images/logo2.png
-    - assets/images/tatsuno_logo_1.jpg
-    - assets/images/tatsuno_logo_2.jpg
-    - assets/images/memberIcon.png
-    - assets/images/fileAddIcon.png
-    - assets/images/folderAddIcon.png
-    - assets/images/pictureAddIcon.png
-    - assets/images/homeIcon.png
-    - assets/images/settingIcon.png
-    - assets/images/notificationIcon.png
-    - assets/images/chatIcon.png
-    - assets/images/chatAddIcon.png
-    - assets/images/blackboardWithCamera.png
-    - assets/images/memberIcon_button.png
-    - assets/images/menuIcon_button.png
-    - assets/images/passwordIcon_button.png
-    - assets/images/logoutIcon_button.png
-    - assets/images/pencil.png
-    - assets/images/cloudUpload.png
-    - assets/images/solarText.png
-    - assets/images/moveLight.png
-    - assets/images/folderIcon.png
-    - assets/images/documentIcon.png
-    - assets/images/checklists/camera-upload.png
-    - assets/images/checklists/checklist-help.png
-    - assets/images/checklists/checklist-helpOff.png
-    - assets/images/checklists/checklist-helpOn.png
-    - assets/images/checklists/checklist-warning-icon.png
-    - assets/images/checklists/important-icon.png
-    - assets/images/checklists/list-warning-icon.png
-    - assets/images/checklists/image-upload.png
-    - assets/images/eraser.png
-    - assets/images/eraser_check.png
-    - assets/images/createIndexIcon0.png
-    - assets/images/createIndexIcon1.png
-    - assets/images/createIndexIcon2.png
-    - assets/images/createIndexIcon3.png
-    - assets/images/memoIcon.png
-    - assets/images/memoIconOn.png
-    - assets/images/helpIcon.png
-    - assets/images/helpIconOff.png
-    - assets/images/helpIconOn.png
-    - assets/images/jumpMenuIcon.png
-    - assets/images/listIcon.png
-    - assets/images/cardIcon.png
-    - assets/images/arrayIcon_1.png
-    - assets/images/arrayIcon_2.png
-    - assets/images/searchIcon.png
-    - assets/images/magnifierIcon.png
-    - assets/images/doing.png
-    - assets/images/lineUpIcon.png
-    - assets/images/fromDeviceIcon.png
-    - assets/images/toDeviceIcon.png
-    - assets/images/fromAgentIcon.png
-    - assets/images/tabOverview.png
-    - assets/images/tabReport.png
-    - assets/images/tabImage.png
-    - assets/images/tabDocument.png
-    - assets/images/tabMember.png
-    - assets/images/tabChecklist.png
-    - assets/images/tabReporter.png
-    - assets/images/agentEditIcon.png
-    - assets/images/agentCopyIcon.png
-    - assets/images/agentDeleteIcon.png
-    - assets/images/alarmIcon.png
-    - assets/images/notificationSettingIcon.png
-    - assets/images/editImageIcon.png
-    - assets/images/downloadImageIcon.png
-    - assets/images/drawingImageIcon.png
-    - assets/images/deleteImageIcon.png
-    - assets/images/openDocument.png
-    - assets/images/imageSavingIcon.png
-    - assets/images/textBiggerIcon.png
-    - assets/images/textSmallerIcon.png
-    - assets/images/imageError.png
-    - assets/images/chatAgentIcon.png
-    - assets/images/chatAgentIcon_1.png
-    - assets/images/chatAgentIcon_2.png
-    - assets/images/chatGroupIcon.png
-    - assets/images/cameraIcon.png
-    - assets/images/addChatFileIcon.png
-    - assets/images/editAvatarIcon.png
-    - assets/images/deleteAvatarIcon.png
-    - assets/images/editTitleIcon.png
-    - assets/images/groupIcon.png
-    - assets/images/imageIcon_chat.png
-    - assets/images/reportMarkIcon.png
-    - assets/images/reportFileMarkIcon.png
-    - assets/images/checklistMarkIcon.png
-    - assets/images/newMarkIcon.png
-    - assets/images/chatMenuIcon.png
-    - assets/images/chatSendMessageIcon.png
-    - assets/images/pdfIcon.png
-    - assets/images/excelIcon.png
-    - assets/images/chatOut.png
-    - assets/images/chatMemberOut.png
-    - assets/images/agentOptionIcon.png
-    - assets/images/chatMemberAddIcon.png
-    - assets/images/chatCreateIcon.png
-    - assets/images/agentChatIcon.png
-    - assets/images/chatToAgentIcon.png
-    - assets/images/addGroupIcon.png
-    - assets/images/addMemberIcon.png
-    - assets/images/tagIcon.png
-    - assets/images/fileMoveIcon.png
-    - assets/images/allSelectIcon.png
-    - assets/images/moveFilesIcon.png
-    - assets/images/selectCancelIcon.png
-    - assets/images/selectOptionIcon.png
-    - assets/images/editPencilIcon.png
-    - assets/images/addToListIcon.png
-    - assets/images/blackboardAddToImage.png
-    - assets/images/blackboardNone.png
-    - assets/images/arrayStart.png
-    - assets/images/arrayCenter.png
-    - assets/images/arrayEnd.png
-    - assets/images/verticalUp.png
-    - assets/images/verticalDown.png
-    - assets/images/verticalCenter.png
-    - assets/images/notCoverIcon.png
-    - assets/images/haveCoverIcon.png
-    - assets/images/reportsImageDeleteIcon.png
-    - assets/images/indexMoveIcon.png
       # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

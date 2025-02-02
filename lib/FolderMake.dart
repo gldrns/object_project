@@ -1,26 +1,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:object_project/SnackbarPage.dart';
 import 'package:object_project/ToastPage.dart';
 
 class FolderMake extends StatefulWidget {
-  // final String projectId;
-  // final String parentFolderId;
-  // final String folderPath;
-  // final String apiUrl;
   final List<dynamic> itemsList;
 
   late Function(bool,String) onUploadComplete;
 
 
   FolderMake({
-    // required this.projectId,
-    // required this.parentFolderId,
-    // required this.folderPath,
     required this.itemsList,
     required this.onUploadComplete,
-    // required this.apiUrl
   });
 
   @override
@@ -28,24 +19,15 @@ class FolderMake extends StatefulWidget {
 }
 
 class _FolderMakeState extends State<FolderMake> {
-  // late String projectId;
   String folderName = '';
-  // late List<dynamic>  response;
   final TextEditingController _textEditingController = TextEditingController();
-  // late String parentFolderId;
-  // late String folderPath;
   late List<dynamic> itemsList;
-  // late String apiUrl;
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    // projectId = widget.projectId;
-    // parentFolderId = widget.parentFolderId;
-    // folderPath = widget.folderPath;
     itemsList = widget.itemsList;
-    // apiUrl = widget.apiUrl;
   }
 
   void createEmptyFolder(String newFolderName) async {
