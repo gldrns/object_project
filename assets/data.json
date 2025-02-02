@@ -1,0 +1,187 @@
+{
+        "templateId": "6619257631f60fb49c00fbd3",
+        "reports": [],
+        "pictureFolders": {
+                "name": "사진",
+                "id": "dade2362-7862-4f5d-9eda-58b7863691ad",
+                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/images",
+                "created_at": "2024-11-15T09:32:12.000000Z",
+                "items": [
+                        {
+                                "name": "시공 전",
+                                "id": "519c05dc-38ff-4737-9155-b3e61bfce845",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/images/IjKc0EHUi3QthB7KQpokb",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "시공 중",
+                                "id": "7b3d0557-a7ca-4562-afd0-5d7646937e98",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/images/91TdcagYYbPDWQx2NvezI",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "시공 후",
+                                "id": "a1a60b3c-e939-434a-92de-dc10221730b1",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/images/uNg0DCYs6MwLarktRj7Yz",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "기타",
+                                "id": "9aba8398-dae9-4bc9-a0fd-97cd9f28af07",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/images/tpJB8rGpIPA8YzAmS9xKK",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        }
+                ],
+                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                "sum": 0
+        },
+        "documentFolders": {
+                "name": "자료",
+                "id": "bdf9e37a-394d-42a4-9d3a-a87c00967db8",
+                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/documents",
+                "created_at": "2024-11-15T09:32:12.000000Z",
+                "items": [
+                        {
+                                "name": "도면",
+                                "id": "6b0a3e20-ca6f-465d-9790-68769d40048e",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/documents/fdPHlrvaFfIVsAfgCXAzA",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "사양",
+                                "id": "1671f1e4-5389-47c1-8673-f0069aea0d32",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/documents/xyzGHuqbk8SjbWA61AENF",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "공정",
+                                "id": "3b7a83df-80fb-4281-a764-7f9075e29eb7",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/documents/vxjfl6h2SbhQfAWCTujUO",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        },
+                        {
+                                "name": "기타",
+                                "id": "0caf7db9-24a4-4b73-aa26-99c1927f4f00",
+                                "folder_path": "E5AyatHMs5oEKofXQg1Xt/cmkdu8o5BFXSRiYeqUMAv/documents/QoVxONT2svprHRJ0sugDd",
+                                "created_at": "2024-11-15T09:32:12.000000Z",
+                                "items": [],
+                                "objects": [],
+                                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                                "sum": 0
+                        }
+                ],
+                "created_at_display": "2024년 11월 15일 (금) 18:32",
+                "sum": 0
+        },
+        "projectOverView": [
+                {
+                        "name": "프로젝트 정보",
+                        "type": "default",
+                        "field": "detail",
+                        "public": 1,
+                        "icon": "/images/projects/basic-info.png",
+                        "items": [
+                                { "name": "성계 번호", "value": 3120015535 },
+                                { "name": "프로젝트명", "value": "싱글식 계량기 교체 공사" },
+                                { "name": "프로젝트 흐름", "value": "진행 중" },
+                                { "name": "공사 내용", "field": "construction_details", "value": "" },
+                                { "name": "시작일", "field": "start_date", "value": "2024년 11월 21일 (목)" },
+                                { "name": "종료일", "field": "end_date", "value": "2024년 11월 22일 (금)" },
+                                { "name": "공사 종류", "field": "constructions", "value": "", "data": "" },
+                                { "name": "비고", "field": "content", "value": "" },
+                                { "name": "DATETEST", "field": "field_6673aab9068760", "data": [], "value": "" }
+                        ],
+                        "created_at": "2024-11-15 18:32",
+                        "created_by": {
+                                "name": "박홍123",
+                                "position": "회사 일반",
+                                "phone": "05090023553",
+                                "avatar": "user_avatar/661f2e561911b6936903dab2/avatar_1720684163_457118",
+                                "corporation": "주식회사 타츠노"
+                        }
+                },
+                {
+                        "name": "거래처 정보",
+                        "type": "default",
+                        "field": "customer",
+                        "public": 1,
+                        "icon": "/images/projects/customer-info.png",
+                        "items": [
+                                { "name": "계약처 코드", "field": "code", "value": "0002310" },
+                                { "name": "계약처명", "field": "name", "value": "ENEOS 트레이딩 주식회사" },
+                                { "name": "비고", "field": "content", "value": "" },
+                                { "name": "DATETEST", "field": "field_7673aab8533f8b", "data": [], "value": "" }
+                        ],
+                        "created_at": "2024-11-15 18:32",
+                        "created_by": {
+                                "name": "박홍123",
+                                "position": "회사 일반",
+                                "phone": "05090023553",
+                                "avatar": "user_avatar/661f2e561911b6936903dab2/avatar_1720684163_457118",
+                                "corporation": "주식회사 타츠노"
+                        }
+                },
+                {
+                        "name": "설치처 정보",
+                        "type": "default",
+                        "field": "property",
+                        "public": 1,
+                        "icon": "/images/projects/property-info.png",
+                        "items": [
+                                { "name": "설치처 코드", "field": "code", "value": "04381938" },
+                                { "name": "설치처명", "field": "name", "value": "일석레온(주) DD 셀프 기미즈 청서점" },
+                                { "name": "설치처 전화번호", "field": "tel", "value": "999-999-9999" },
+                                { "name": "설치처 소유 형태", "field": "type", "value": "사유1" },
+                                { "name": "비고", "field": "content", "value": "" },
+                                {
+                                        "name": "주소",
+                                        "field": "address",
+                                        "value": "〒2920807  치바현 기미즈시 청서남 3-2-2",
+                                        "data": [2920807, "치바현", "기미즈시", "청서남", "3-2-2", null]
+                                },
+                                {
+                                        "name": "DATETEST",
+                                        "field": "field_7673aab7697fd3",
+                                        "data": "2024-11-22T00:00:00+09:00",
+                                        "value": "2024년 11월 22일 (금)"
+                                }
+                        ],
+                        "created_at": "2024-11-15 18:32",
+                        "created_by": {
+                                "name": "박홍123",
+                                "position": "회사 일반",
+                                "phone": "05090023553",
+                                "avatar": "user_avatar/661f2e561911b6936903dab2/avatar_1720684163_457118",
+                                "corporation": "주식회사 타츠노"
+                        }
+                }
+        ]
+}
