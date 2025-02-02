@@ -1,6 +1,6 @@
 # object_project
 
-A new Flutter project.
+엄무 보조어플 
 
 ## Getting Started
 
